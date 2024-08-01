@@ -5,7 +5,12 @@ async function fetchData(url) {
             value.map((data) => {
                 const element = {
                     tag: "div",
-                    children: {}
+                    children: {
+                        h1: [],
+                        h3: [],
+                        p: [],
+                        img: []
+                    }
                 }
                 for (const [key, value] of Object.entries(data)) {
                     if (typeof value === "object"){
@@ -16,13 +21,16 @@ async function fetchData(url) {
                             continue
                         }
                         else if(key.toLowerCase().match('im') || value.toLowerCase().match('im')){
-                            element.children.img = value;
+                            element.children.img.push(value);
                         }
-                        else if (value.length < 20 || value.match("name")) {
-                            element.children.h1 = value
+                        else if (value.length < 20) {
+                            element.children.h1.push(value);
+                        }
+                        else if (value.length < 40) {
+                            element.children.h3.push(value);
                         }
                         else {
-                            element.children.p = value
+                            element.children.p.push(value);
                         }
                        
                      }
@@ -32,15 +40,17 @@ async function fetchData(url) {
                 }
                 const placeholder = document.createElement(element.tag);
                 placeholder.id = "data";
-                for (const [key, value] of Object.entries(element.children)) {
-                    const temp = document.createElement(key);
-                    if (key === "img") {
-                        temp.src = value
-                    }
-                    else {
-                        temp.innerHTML = value;
-                    }
-                    placeholder.appendChild(temp);
+                for (const[key, value] of Object.entries(element.children)) {
+                    value.forEach(data => {
+                        const temp = document.createElement(key);
+                        if (key === "img") {
+                            temp.src = data
+                        }
+                        else {
+                            temp.innerHTML = data;
+                        }
+                        placeholder.appendChild(temp);
+                    })
                 }
                 document.body.appendChild(placeholder)
             }

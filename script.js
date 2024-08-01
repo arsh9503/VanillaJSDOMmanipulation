@@ -1,5 +1,6 @@
 async function fetchData(url) {
    const response = await fetch(url);
+   console.log(await response.json())
     Object.values((await response.json())).forEach(value => {
         if(typeof value === "object"){
             value.map((data) => {
@@ -41,6 +42,9 @@ async function fetchData(url) {
                 const placeholder = document.createElement(element.tag);
                 placeholder.id = "data";
                 for (const[key, value] of Object.entries(element.children)) {
+                    if(value.length <= 0 ){
+                        continue;
+                    }
                     value.forEach(data => {
                         const temp = document.createElement(key);
                         if (key === "img") {
@@ -60,7 +64,7 @@ async function fetchData(url) {
     } )
 }
 
-fetchData("https://newsapi.org/v2/everything?q=tesla&from=2024-07-01&sortBy=publishedAt&apiKey=777ca7dc161f412fa30e6189aac0ddb9");
+fetchData("https://jsonplaceholder.typicode.com/posts");
 
 let currentIndex = 1
 

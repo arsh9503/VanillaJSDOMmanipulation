@@ -109,7 +109,7 @@ async function fetchData(url) {
 
 }
 
-fetchData("https://gist.githubusercontent.com/poudyalanil/ca84582cbeb4fc123a13290a586da925/raw/14a27bd0bcd0cd323b35ad79cf3b493dddf6216b/videos.json");
+fetchData("https://newsapi.org/v2/everything?q=tesla&from=2024-07-04&sortBy=publishedAt&apiKey=777ca7dc161f412fa30e6189aac0ddb9");
 
 let currentIndex = 1
 

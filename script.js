@@ -16,9 +16,8 @@ async function fetchData(url) {
     "gap": "20px",
     "width": "100%" // Ensure the main element takes up the full width of its container
 });
-
     Object.values((responseData)).forEach(value => {
-        if (typeof value === "object") {
+        if (value instanceof Array) {
             value.map((data) => {
                 const element = {
                     tag: "div",
@@ -27,7 +26,8 @@ async function fetchData(url) {
                         h1: [],
                         p: [],
                         h3: [],
-                        h4: [] 
+                        h4: [],
+                        a: []
                     }
                 }
                 for (const [key, value] of Object.entries(data)) {
@@ -47,6 +47,9 @@ async function fetchData(url) {
                             }
                             else if(["content", "description", "username", "email"].some(field => key.match(field))){
                                 element.children.p.push(value);
+                            }
+                            else if(value.match("http")){
+                                element.children.a.push(value);
                             }
                             else {
                             element.children.h3.push(value);
@@ -74,6 +77,11 @@ async function fetchData(url) {
                         if (key === "img") {
                             temp.src = data
                             temp.style.flexWrap = "wrap"
+                        }
+                        else if(key === "a"){
+                            temp.href = data
+                            temp.innerText = (data.length > 40) ? data.substring(0, 40) + "..." : data
+                            temp.style.color = "pink"
                         }
                         else {
                             temp.innerHTML = data;

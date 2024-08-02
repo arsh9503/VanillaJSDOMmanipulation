@@ -1,79 +1,112 @@
 async function fetchData(url) {
-   const response = await fetch(url);
- const responseData = await response.json();
-   if( responseData instanceof Array){
-    
+    const response = await fetch(url);
+    let responseData = await response.json();
+    if (responseData instanceof Array) {
+       responseData = {
+        data: responseData
+       }
+        console.log(responseData)
     }
-    else {
-        Object.values((responseData)).forEach(value => {
-            if(typeof value === "object"){
-                value.map((data) => {
-                    const element = {
-                        tag: "div",
-                        children: {
-                            h1: [],
-                            h3: [],
-                            p: [],
-                            img: []
-                        }
+    const main = document.createElement('section');
+    main.id="cards"
+    Object.assign(main.style, {
+    "display": "flex",
+    "flexDirection": "row",
+    "flexWrap": "wrap",
+    "gap": "20px",
+    "width": "100%" // Ensure the main element takes up the full width of its container
+});
+
+    Object.values((responseData)).forEach(value => {
+        if (typeof value === "object") {
+            value.map((data) => {
+                const element = {
+                    tag: "div",
+                    children: {
+                        img: [],
+                        h1: [],
+                        p: [],
+                        h3: [],
+                        h4: [] 
                     }
-                    for (const [key, value] of Object.entries(data)) {
-                        if (typeof value === "object"){
-                            continue;
+                }
+                for (const [key, value] of Object.entries(data)) {
+                    if (typeof value === "object") {
+                        continue;
+                    }
+                    else if (typeof value === "string") {
+                        if (value === "") {
+                            continue
                         }
-                        else if (typeof value === "string") { 
-                            if(value === ""){
-                                continue
+                        else if (key.toLowerCase().match('im') || key.toLowerCase().match('avatar')) {
+                            element.children.img.push(value);
+                        }
+                        else if (value.length < 150) {
+                            if(key.match("title") || key.match("name")){
+                            element.children.h1.push(value);
                             }
-                            else if(key.toLowerCase().match('im') || value.toLowerCase().match('im')){
-                                element.children.img.push(value);
-                            }
-                            else if (value.length < 20) {
-                                element.children.h1.push(value);
-                            }
-                            else if (value.length < 40) {
-                                element.children.h3.push(value);
-                            }
-                            else {
+                            else if(["content", "description", "username", "email"].some(field => key.match(field))){
                                 element.children.p.push(value);
                             }
-                           
-                         }
-                         else {
-                            element.children.h3 = value;
-                         }
-                    }
-                    const placeholder = document.createElement(element.tag);
-                    placeholder.id = "data";
-                    for (const[key, value] of Object.entries(element.children)) {
-                        if(value.length <= 0 ){
-                            continue;
-                        }
-                        value.forEach(data => {
-                            const temp = document.createElement(key);
-                            if (key === "img") {
-                                temp.src = data
-                            }
                             else {
-                                temp.innerHTML = data;
+                            element.children.h3.push(value);
                             }
-                            placeholder.appendChild(temp);
-                        })
+                        }
+                        else {
+                            element.children.p.push(value);
+                        }
                     }
-                    document.body.appendChild(placeholder)
+                    else {
+                        element.children.h4.push(value);
+                    }
                 }
-            
-                )
+                const placeholder = document.createElement(element.tag);
+                placeholder.id = "data";
+                for (const [key, value] of Object.entries(element.children)) {
+                    if( typeof value === "number"){
+                        continue
+                    }
+                    if (value.length <= 0) {
+                        continue;
+                    }
+                    value.forEach(data => {
+                        const temp = document.createElement(key);
+                        if (key === "img") {
+                            temp.src = data
+                            temp.style.flexWrap = "wrap"
+                        }
+                        else {
+                            temp.innerHTML = data;
+                        }
+                        placeholder.appendChild(temp);
+                    })
+                }
+                Object.assign(placeholder.style, {
+                    "display": "flex",
+                    "flexDirection": "column",
+                
+                    "backgroundColor": "black",
+                    "color": "white",
+                    "borderRadius": "20px",
+                    "padding": "30px",
+                    "width": "25%"
+                })
+                main.appendChild(placeholder)
             }
-        } )
-    }
 
+            )
+        }
+    })
+    document.body.appendChild(main)
 
-   
-    
 }
 
-fetchData("https://saurav.tech/NewsAPI/top-headlines/category/health/in.json");
+
+
+
+
+
+fetchData("https://newsapi.org/v2/everything?q=tesla&from=2024-07-01&sortBy=publishedAt&apiKey=777ca7dc161f412fa30e6189aac0ddb9");
 
 let currentIndex = 1
 

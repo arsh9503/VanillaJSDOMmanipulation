@@ -38,7 +38,7 @@ async function fetchData(url) {
                         if (value === "") {
                             continue
                         }
-                        else if (key.toLowerCase().match('im') || key.toLowerCase().match('avatar')) {
+                        else if (["webp", "png", "jpg", "jpeg"].some(field => value.match(field)) || key.toLowerCase().match('avatar')) {
                             element.children.img.push(value);
                         }
                         else if (value.length < 150) {
@@ -109,7 +109,7 @@ async function fetchData(url) {
 
 }
 
-fetchData("https://newsapi.org/v2/everything?q=flowers&from=2024-07-03&sortBy=publishedAt&apiKey=777ca7dc161f412fa30e6189aac0ddb9");
+fetchData("https://gist.githubusercontent.com/poudyalanil/ca84582cbeb4fc123a13290a586da925/raw/14a27bd0bcd0cd323b35ad79cf3b493dddf6216b/videos.json");
 
 let currentIndex = 1
 

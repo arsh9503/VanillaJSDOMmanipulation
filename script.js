@@ -1,70 +1,79 @@
 async function fetchData(url) {
    const response = await fetch(url);
-   console.log(await response.json())
-    Object.values((await response.json())).forEach(value => {
-        if(typeof value === "object"){
-            value.map((data) => {
-                const element = {
-                    tag: "div",
-                    children: {
-                        h1: [],
-                        h3: [],
-                        p: [],
-                        img: []
+ const responseData = await response.json();
+   if( responseData instanceof Array){
+    
+    }
+    else {
+        Object.values((responseData)).forEach(value => {
+            if(typeof value === "object"){
+                value.map((data) => {
+                    const element = {
+                        tag: "div",
+                        children: {
+                            h1: [],
+                            h3: [],
+                            p: [],
+                            img: []
+                        }
                     }
-                }
-                for (const [key, value] of Object.entries(data)) {
-                    if (typeof value === "object"){
-                        continue;
+                    for (const [key, value] of Object.entries(data)) {
+                        if (typeof value === "object"){
+                            continue;
+                        }
+                        else if (typeof value === "string") { 
+                            if(value === ""){
+                                continue
+                            }
+                            else if(key.toLowerCase().match('im') || value.toLowerCase().match('im')){
+                                element.children.img.push(value);
+                            }
+                            else if (value.length < 20) {
+                                element.children.h1.push(value);
+                            }
+                            else if (value.length < 40) {
+                                element.children.h3.push(value);
+                            }
+                            else {
+                                element.children.p.push(value);
+                            }
+                           
+                         }
+                         else {
+                            element.children.h3 = value;
+                         }
                     }
-                    else if (typeof value === "string") { 
-                        if(value === ""){
-                            continue
+                    const placeholder = document.createElement(element.tag);
+                    placeholder.id = "data";
+                    for (const[key, value] of Object.entries(element.children)) {
+                        if(value.length <= 0 ){
+                            continue;
                         }
-                        else if(key.toLowerCase().match('im') || value.toLowerCase().match('im')){
-                            element.children.img.push(value);
-                        }
-                        else if (value.length < 20) {
-                            element.children.h1.push(value);
-                        }
-                        else if (value.length < 40) {
-                            element.children.h3.push(value);
-                        }
-                        else {
-                            element.children.p.push(value);
-                        }
-                       
-                     }
-                     else {
-                        element.children.h3 = value;
-                     }
-                }
-                const placeholder = document.createElement(element.tag);
-                placeholder.id = "data";
-                for (const[key, value] of Object.entries(element.children)) {
-                    if(value.length <= 0 ){
-                        continue;
+                        value.forEach(data => {
+                            const temp = document.createElement(key);
+                            if (key === "img") {
+                                temp.src = data
+                            }
+                            else {
+                                temp.innerHTML = data;
+                            }
+                            placeholder.appendChild(temp);
+                        })
                     }
-                    value.forEach(data => {
-                        const temp = document.createElement(key);
-                        if (key === "img") {
-                            temp.src = data
-                        }
-                        else {
-                            temp.innerHTML = data;
-                        }
-                        placeholder.appendChild(temp);
-                    })
+                    document.body.appendChild(placeholder)
                 }
-                document.body.appendChild(placeholder)
+            
+                )
             }
-        
-            )
-        }
-    } )
+        } )
+    }
+
+
+   
+    
 }
 
-fetchData("https://jsonplaceholder.typicode.com/posts");
+fetchData("https://saurav.tech/NewsAPI/top-headlines/category/health/in.json");
 
 let currentIndex = 1
 

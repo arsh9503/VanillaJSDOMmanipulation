@@ -109,12 +109,7 @@ async function fetchData(url) {
 
 }
 
-
-
-
-
-
-fetchData("https://newsapi.org/v2/everything?q=tesla&from=2024-07-01&sortBy=publishedAt&apiKey=777ca7dc161f412fa30e6189aac0ddb9");
+fetchData("https://newsapi.org/v2/everything?q=flowers&from=2024-07-03&sortBy=publishedAt&apiKey=777ca7dc161f412fa30e6189aac0ddb9");
 
 let currentIndex = 1
 
